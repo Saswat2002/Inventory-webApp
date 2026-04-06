@@ -3,7 +3,7 @@
 This is a Google Apps Script based inventory management web app.
 
 ## Features
-- Add stock entries
+- Add & delete stock entries
 - Auto calculate closing stock
 - Simple UI
 
@@ -12,4 +12,4 @@ This is a Google Apps Script based inventory management web app.
 - HTML, CSS, JavaScript
 
 ## Live Link
-[🚀 Open Inventory App](https://script.google.com/macros/s/AKfycbzYT3GklMQNwBqrqPUuE5OxAAihN2ETzGJWCMJJ0huPGHjfwoakdXCQyUS7o5gGegJYNA/exec)
+[🚀 Open Inventory App](https://script.google.com/macros/s/AKfycbz-_xSp9dJi-3WfbriysYpCBAUH9cRF7ltd_q-XKjQ1xtlrrLJrfD51WletR11qg-rNvQ/exec)
