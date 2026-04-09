@@ -6,6 +6,7 @@ function doGet() {
     .setTitle('Inventory Manager');
 }
 
+// 🔹 SAVE / UPDATE DATA
 function saveData(data) {
   const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(SHEET_NAME);
   const allData = sheet.getDataRange().getValues();
@@ -20,19 +21,16 @@ function saveData(data) {
   let inputItem = cleanText(data.item);
   let foundRow = -1;
 
-  // 🔍 SEARCH ENTIRE SHEET
+  // 🔍 SEARCH ITEM
   for (let i = 1; i < allData.length; i++) {
     let sheetItem = allData[i][2];
 
     if (sheetItem) {
       let cleaned = cleanText(sheetItem);
 
-      // DEBUG LOG
-      Logger.log("Comparing: " + cleaned + " with " + inputItem);
-
       if (cleaned === inputItem) {
         foundRow = i + 1;
-        break; // stop at first match
+        break;
       }
     }
   }
@@ -41,7 +39,7 @@ function saveData(data) {
   let received = Number(data.received) || 0;
   let issued = Number(data.issued) || 0;
 
-  // ✅ UPDATE EXISTING
+  // ✅ UPDATE EXISTING ITEM
   if (foundRow !== -1) {
 
     let prevClosing = Number(sheet.getRange(foundRow, 7).getValue()) || 0;
@@ -56,13 +54,23 @@ function saveData(data) {
     sheet.getRange(foundRow, 6).setValue(newIssued);
     sheet.getRange(foundRow, 7).setValue(newClosing);
 
-    return ["UPDATED", data.item, newClosing];
+    // 🔥 RETURN FULL ROW DATA
+    return [
+      "UPDATED",
+      foundRow,
+      data.date,
+      data.item,
+      opening,
+      newReceived,
+      newIssued,
+      newClosing
+    ];
   }
 
-  // ✅ ADD NEW ONLY IF NOT FOUND
+  // ✅ ADD NEW ITEM
   else {
     let lastRow = sheet.getLastRow();
-    let slNo = lastRow;
+    let slNo = lastRow; // serial number
 
     let closingStock = opening + received - issued;
 
@@ -76,9 +84,21 @@ function saveData(data) {
       closingStock
     ]);
 
-    return ["NEW", data.item, closingStock];
+    // 🔥 RETURN FULL ROW DATA
+    return [
+      "NEW",
+      slNo,
+      data.date,
+      data.item,
+      opening,
+      received,
+      issued,
+      closingStock
+    ];
   }
 }
+
+// 🗑 DELETE ITEM
 function deleteItem(itemName) {
   const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(SHEET_NAME);
   const allData = sheet.getDataRange().getValues();
@@ -107,7 +127,7 @@ function deleteItem(itemName) {
     }
   }
 
-  // ❌ IF NOT FOUND
+  // ❌ NOT FOUND
   if (foundRow === -1) {
     return ["NOT_FOUND", itemName];
   }
