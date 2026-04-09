@@ -10,7 +10,7 @@
     }
 
     .container {
-      max-width: 700px;
+      max-width: 800px;
       width: 95%;
       background: white;
       padding: 20px;
@@ -24,6 +24,7 @@
     }
 
     input {
+      text-align:center;
       width: 100%;
       padding: 10px;
       margin: 8px 0;
@@ -56,6 +57,20 @@
       margin-top: 10px;
       color: green;
     }
+
+    table {
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+
+    th, td {
+      padding: 8px;
+    }
+
+    th {
+      background: #28a745;
+      color: white;
+    }
   </style>
 </head>
 
@@ -76,6 +91,20 @@
     </button>
 
     <div class="msg" id="msg"></div>
+
+    <!-- ✅ INVENTORY TABLE -->
+    <h3>Inventory Table</h3>
+    <table id="inventoryTable" border="1" width="100%" style="text-align:center;">
+      <tr>
+        <th>Sl No</th>
+        <th>Date</th>
+        <th>Item</th>
+        <th>Opening</th>
+        <th>Received</th>
+        <th>Issued</th>
+        <th>Closing</th>
+      </tr>
+    </table>
   </div>
 
 <script>
@@ -92,11 +121,12 @@ function submitData() {
     .withSuccessHandler(function(response) {
 
       if (response[0] === "UPDATED") {
-        document.getElementById("msg").innerText =
-          "✅ Item updated! Current stock: " + response[2];
-      } else {
-        document.getElementById("msg").innerText =
-          "✅ New item added! Current stock: " + response[2];
+        document.getElementById("msg").innerText = "✅ Item updated!";
+        updateRow(response);
+      } 
+      else {
+        document.getElementById("msg").innerText = "✅ New item added!";
+        addRow(response);
       }
 
     })
@@ -107,6 +137,55 @@ function submitData() {
     .saveData(data);
 }
 
+// ➕ ADD NEW ROW
+function addRow(rowData) {
+  const table = document.getElementById("inventoryTable");
+
+  const newRow = table.insertRow(1);
+
+  for (let i = 1; i < rowData.length; i++) {
+    let cell = newRow.insertCell();
+    cell.innerText = rowData[i];
+  }
+
+  // highlight green
+  newRow.style.backgroundColor = "#d4edda";
+
+  setTimeout(() => {
+    newRow.style.backgroundColor = "";
+  }, 2000);
+}
+
+// 🔄 UPDATE EXISTING ROW
+function updateRow(rowData) {
+  const table = document.getElementById("inventoryTable");
+  const rowNumber = rowData[1];
+
+  for (let i = 1; i < table.rows.length; i++) {
+    let row = table.rows[i];
+
+    if (row.cells[0].innerText == rowNumber) {
+
+      for (let j = 1; j < rowData.length; j++) {
+        row.cells[j - 1].innerText = rowData[j];
+      }
+
+      // highlight yellow
+      row.style.backgroundColor = "#fff3cd";
+
+      setTimeout(() => {
+        row.style.backgroundColor = "";
+      }, 2000);
+
+      return;
+    }
+  }
+
+  // if not found → add
+  addRow(rowData);
+}
+
+// 🗑 DELETE
 function deleteData() {
   let item = document.getElementById("item").value;
 
