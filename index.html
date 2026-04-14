@@ -8,6 +8,33 @@
       background: #f4f6f9;
       padding: 20px;
     }
+    .btn-row {
+       display: flex;
+       justify-content: center;
+       gap: 10px;
+       margin-top: 10px;
+    }
+
+    /*Save button style*/
+     
+     .save-btn {
+         background-color: #4CAF50;
+         color: white;
+     }
+     .save-btn:hover {
+         background-color: #218838;  /* darker green */
+     }
+
+    /* Delete button style */
+    
+    .delete-btn {
+      background-color: #f44336;
+      color: white;
+     }
+
+    .delete-btn:hover {
+        background-color: #c82333;  /* darker red */
+     }
 
     .container {
       max-width: 800px;
@@ -33,25 +60,17 @@
     }
 
     button {
-      width: 100%;
-      padding: 10px;
+      width: auto;
+      padding: 6px 12px;
       background: #28a745;
       color: white;
       border: none;
       border-radius: 5px;
-      font-size: 16px;
+      font-size: 14px;
       cursor: pointer;
     }
 
-    button:hover {
-      background: #218838;
-    }
-
-    .delete-btn {
-      background: red;
-      margin-top: 10px;
-    }
-
+   
     .msg {
       text-align: center;
       margin-top: 10px;
@@ -83,12 +102,16 @@
     <input type="number" id="opening" placeholder="Opening Stock">
     <input type="number" id="received" placeholder="Received">
     <input type="number" id="issued" placeholder="Issued">
+    <div class="btn-row">
+          <button onclick="submitData()" class="save-btn">Save</button>
 
-    <button onclick="submitData()">Save</button>
+          <button onclick="deleteData()" class="delete-btn">Delete</button>
+    </div>
+    <!--<button onclick="submitData()">Save</button>
 
     <button onclick="deleteData()" class="delete-btn">
       Delete Item
-    </button>
+    </button> -->
 
     <div class="msg" id="msg"></div>
 

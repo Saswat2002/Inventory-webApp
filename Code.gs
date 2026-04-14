@@ -135,5 +135,12 @@ function deleteItem(itemName) {
   // 🗑 DELETE ROW
   sheet.deleteRow(foundRow);
 
+  let data = sheet.getDataRange().getValues();
+
+  for (let i = 1; i < data.length; i++) {
+       data[i][0] = i;                   /*updating sheet sl no*/
+     }
+
+  sheet.getRange(1, 1, data.length, data[0].length).setValues(data);  
   return ["DELETED", itemName];
 }
