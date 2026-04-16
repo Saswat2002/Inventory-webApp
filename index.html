@@ -3,121 +3,110 @@
 <head>
   <base target="_top">
   <style>
+    /* ✅ YOUR CSS (UNCHANGED) */
     body {
       font-family: Arial;
       background: #f4f6f9;
       padding: 20px;
     }
-    .btn-row {
-       display: flex;
-       justify-content: center;
-       gap: 10px;
-       margin-top: 10px;
-    }
-
-    /*Save button style*/
-     
-     .save-btn {
-         background-color: #4CAF50;
-         color: white;
-     }
-     .save-btn:hover {
-         background-color: #218838;  /* darker green */
-     }
-
-    /* Delete button style */
-    
-    .delete-btn {
-      background-color: #f44336;
-      color: white;
-     }
-
-    .delete-btn:hover {
-        background-color: #c82333;  /* darker red */
-     }
 
     .container {
-      max-width: 800px;
+      max-width: 850px;
       width: 95%;
       background: white;
-      padding: 20px;
+      padding: 25px;
       margin: auto;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
 
-    h2 {
-      text-align: center;
-    }
+    h2 { text-align: center; margin-bottom: 15px; }
 
     input {
-      text-align:center;
+      text-align: center;
       width: 100%;
-      padding: 10px;
-      margin: 8px 0;
-      border-radius: 5px;
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 6px;
       border: 1px solid #ccc;
+      font-size: 14px;
+    }
+
+    .btn-row {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 10px;
     }
 
     button {
-      width: auto;
-      padding: 6px 12px;
-      background: #28a745;
-      color: white;
+      padding: 8px 16px;
       border: none;
-      border-radius: 5px;
-      font-size: 14px;
+      border-radius: 6px;
+      color: white;
       cursor: pointer;
+      font-size: 14px;
+      transition: all 0.3s ease;
     }
 
-   
+    .save-btn { background-color: #4CAF50; }
+    .save-btn:hover { background-color: #1e7e34; transform: scale(1.05); }
+
+    .delete-btn { background-color: #ff4d4d; }
+    .delete-btn:hover { background-color: #b30000; transform: scale(1.05); }
+
     .msg {
       text-align: center;
-      margin-top: 10px;
-      color: green;
+      margin-top: 12px;
+      font-weight: bold;
     }
 
     table {
       border-collapse: collapse;
       margin-top: 15px;
-    }
-
-    th, td {
-      padding: 8px;
+      width: 100%;
+      text-align: center;
+      border-radius: 8px;
+      overflow: hidden;
     }
 
     th {
       background: #28a745;
       color: white;
+      padding: 12px;
     }
+
+    td {
+      padding: 10px;
+      border-bottom: 1px solid #ddd;
+    }
+
+    tr:nth-child(even) { background: #f9f9f9; }
+    tr:hover { background: #f1f1f1; }
   </style>
 </head>
 
 <body>
-  <div class="container">
-    <h2>Inventory Entry</h2>
 
-    <input type="date" id="date">
-    <input type="text" id="item" placeholder="Item Name">
-    <input type="number" id="opening" placeholder="Opening Stock">
-    <input type="number" id="received" placeholder="Received">
-    <input type="number" id="issued" placeholder="Issued">
-    <div class="btn-row">
-          <button onclick="submitData()" class="save-btn">Save</button>
+<div class="container">
+  <h2>Inventory Entry</h2>
 
-          <button onclick="deleteData()" class="delete-btn">Delete</button>
-    </div>
-    <!--<button onclick="submitData()">Save</button>
+  <input type="date" id="date">
+  <input type="text" id="item" placeholder="Item Name">
+  <input type="number" id="opening" placeholder="Opening Stock">
+  <input type="number" id="received" placeholder="Received">
+  <input type="number" id="issued" placeholder="Issued">
 
-    <button onclick="deleteData()" class="delete-btn">
-      Delete Item
-    </button> -->
+  <div class="btn-row">
+    <button onclick="submitData()" class="save-btn">Save</button>
+    <button onclick="deleteData()" class="delete-btn">Delete</button>
+  </div>
 
-    <div class="msg" id="msg"></div>
+  <div id="msg" class="msg"></div>
 
-    <!-- ✅ INVENTORY TABLE -->
-    <h3>Inventory Table</h3>
-    <table id="inventoryTable" border="1" width="100%" style="text-align:center;">
+  <h3>Inventory Table</h3>
+  <table id="inventoryTable">
+    <thead>
       <tr>
         <th>Sl No</th>
         <th>Date</th>
@@ -127,117 +116,117 @@
         <th>Issued</th>
         <th>Closing</th>
       </tr>
-    </table>
-  </div>
+    </thead>
+    <tbody></tbody>
+  </table>
+</div>
 
 <script>
+
+// ✅ LOAD DATA ON PAGE LOAD
+window.onload = function () {
+  loadTable();
+};
+
+// ================= LOAD TABLE =================
+function loadTable() {
+  google.script.run
+    .withSuccessHandler(function(data) {
+      const tbody = document.querySelector("#inventoryTable tbody");
+      tbody.innerHTML = "";
+
+      for (let i = 1; i < data.length; i++) {
+        let row = tbody.insertRow();
+
+        data[i].forEach(cell => {
+          row.insertCell().innerText = cell;
+        });
+      }
+    })
+    .getAllData();
+}
+
+// ================= SAVE =================
 function submitData() {
   let data = {
-    date: document.getElementById("date").value,
-    item: document.getElementById("item").value,
-    opening: document.getElementById("opening").value,
-    received: document.getElementById("received").value,
-    issued: document.getElementById("issued").value
+    date: date.value,
+    item: item.value,
+    opening: opening.value,
+    received: received.value,
+    issued: issued.value
   };
 
   google.script.run
-    .withSuccessHandler(function(response) {
+    .withSuccessHandler(function(res) {
 
-      if (response[0] === "UPDATED") {
-        document.getElementById("msg").innerText = "✅ Item updated!";
-        updateRow(response);
-      } 
-      else {
-        document.getElementById("msg").innerText = "✅ New item added!";
-        addRow(response);
+      if (res[0] === "UPDATED") {
+        msg.innerText = "✅ Item updated!";
+        msg.style.color = "orange";
+      } else {
+        msg.innerText = "✅ New item added!";
+        msg.style.color = "green";
       }
 
+      loadTable(); // 🔥 ALWAYS REFRESH TABLE
+
     })
-    .withFailureHandler(function(err) {
-      document.getElementById("msg").innerText =
-        "❌ Error: " + err.message;
+    .withFailureHandler(err => {
+      msg.innerText = "❌ " + err.message;
+      msg.style.color = "red";
     })
     .saveData(data);
 }
 
-// ➕ ADD NEW ROW
-function addRow(rowData) {
-  const table = document.getElementById("inventoryTable");
-
-  const newRow = table.insertRow(1);
-
-  for (let i = 1; i < rowData.length; i++) {
-    let cell = newRow.insertCell();
-    cell.innerText = rowData[i];
-  }
-
-  // highlight green
-  newRow.style.backgroundColor = "#d4edda";
-
-  setTimeout(() => {
-    newRow.style.backgroundColor = "";
-  }, 2000);
-}
-
-// 🔄 UPDATE EXISTING ROW
-function updateRow(rowData) {
-  const table = document.getElementById("inventoryTable");
-  const rowNumber = rowData[1];
-
-  for (let i = 1; i < table.rows.length; i++) {
-    let row = table.rows[i];
-
-    if (row.cells[0].innerText == rowNumber) {
-
-      for (let j = 1; j < rowData.length; j++) {
-        row.cells[j - 1].innerText = rowData[j];
-      }
-
-      // highlight yellow
-      row.style.backgroundColor = "#fff3cd";
-
-      setTimeout(() => {
-        row.style.backgroundColor = "";
-      }, 2000);
-
-      return;
-    }
-  }
-
-  // if not found → add
-  addRow(rowData);
-}
-
-// 🗑 DELETE
+// ================= DELETE =================
 function deleteData() {
-  let item = document.getElementById("item").value;
+  let itemName = item.value;
 
-  if (!item) {
-    document.getElementById("msg").innerText =
-      "⚠️ Enter item name to delete";
+  if (!itemName) {
+    msg.innerText = "⚠️ Enter item name";
+    msg.style.color = "orange";
     return;
   }
 
-  if (!confirm("Are you sure you want to delete this item?")) return;
+  if (!confirm("Delete item?")) return;
 
   google.script.run
-    .withSuccessHandler(function(response) {
+    .withSuccessHandler(function(res) {
 
-      if (response[0] === "DELETED") {
-        document.getElementById("msg").innerText =
-          "🗑 Item deleted successfully!";
+      if (res[0] === "DELETED") {
+
+        msg.innerText = "🗑 Item deleted successfully!";
+        msg.style.color = "red";
+
+        showDeletedRow(res);  // 👈 show deleted preview
+        loadTable();          // 🔥 refresh table (fixes everything)
+
       } else {
-        document.getElementById("msg").innerText =
-          "❌ Item not found!";
+        msg.innerText = "❌ Item not found";
+        msg.style.color = "red";
       }
 
     })
-    .withFailureHandler(function(err) {
-      document.getElementById("msg").innerText =
-        "❌ Error: " + err.message;
+    .withFailureHandler(err => {
+      msg.innerText = "❌ " + err.message;
+      msg.style.color = "red";
     })
-    .deleteItem(item);
+    .deleteItem(itemName);
 }
+
+// ================= SHOW DELETED ROW =================
+function showDeletedRow(data) {
+  const tbody = document.querySelector("#inventoryTable tbody");
+  let row = tbody.insertRow(0);
+
+  for (let i = 1; i < data.length; i++) {
+    row.insertCell().innerText = data[i];
+  }
+
+  row.style.background = "#f8d7da";
+
+  setTimeout(() => row.remove(), 3000);
+}
+
 </script>
 
 </body>
