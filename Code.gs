@@ -132,15 +132,27 @@ function deleteItem(itemName) {
     return ["NOT_FOUND", itemName];
   }
 
-  // 🗑 DELETE ROW
-  sheet.deleteRow(foundRow);
+  // ✅ GET ROW DATA BEFORE DELETE
+let lastCol = sheet.getLastColumn();
+let deletedRow = sheet.getRange(foundRow, 1, 1, lastCol).getValues()[0];
 
-  let data = sheet.getDataRange().getValues();
+// 🗑 DELETE ROW
+sheet.deleteRow(foundRow);
 
-  for (let i = 1; i < data.length; i++) {
-       data[i][0] = i;                   /*updating sheet sl no*/
-     }
+// ✅ NORMALIZE SL NO
+let data = sheet.getDataRange().getValues();
 
-  sheet.getRange(1, 1, data.length, data[0].length).setValues(data);  
-  return ["DELETED", itemName];
+for (let i = 1; i < data.length; i++) {
+  data[i][0] = i;
+}
+
+sheet.getRange(1, 1, data.length, data[0].length).setValues(data);
+
+// ✅ RETURN FULL DELETED ROW
+return ["DELETED"].concat(deletedRow);
+ 
+}
+function getAllData() {
+  const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(SHEET_NAME);
+  return sheet.getDataRange().getValues();
 }
