@@ -5,7 +5,7 @@ This is a Google Apps Script based inventory management web app.
 ## Features
 - Add & delete stock entries
 - Auto calculate closing stock
-- Simple UI
+- User friendly UI 
 
 ## Tech Used
 - Google Apps Script
